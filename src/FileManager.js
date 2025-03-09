@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { FaUpload, FaDownload, FaVideo, FaCloudUploadAlt } from "react-icons/fa";
+import "./styles/FileManager.css";
 
 function FileManager() {
     const [file, setFile] = useState(null);
@@ -218,30 +220,61 @@ function FileManager() {
     };
 
     return (
-        <div style={{ textAlign: "center", padding: "20px" }}>
-            <h2>Gestor de Archivos S3</h2>
+        <div className="file-manager-container">
+            <div className="header">
+                <h2>Video Content Manager</h2>
+                <p>Upload, manage and share your video content</p>
+            </div>
 
-            <h3>Subir Archivo</h3>
-            <input type="file" accept="video/mp4" onChange={(e) => setFile(e.target.files[0])} />
-            <button onClick={uploadFile} disabled={!file}>Subir</button>
+            <div className="upload-section">
+                <div className="file-input-wrapper">
+                    <input
+                        type="file"
+                        accept="video/mp4"
+                        onChange={(e) => setFile(e.target.files[0])}
+                        className="file-input"
+                        id="file-input"
+                    />
+                    <label htmlFor="file-input" className="file-input-label">
+                        <FaCloudUploadAlt size={40} color="#4facfe" />
+                        <div style={{ marginLeft: "1rem" }}>
+                            {file ? file.name : "Drag and drop your video or click to browse"}
+                        </div>
+                    </label>
+                </div>
+                <button 
+                    onClick={uploadFile} 
+                    disabled={!file}
+                    className="upload-button"
+                >
+                    <FaUpload style={{ marginRight: "8px" }} /> Upload Video
+                </button>
+            </div>
 
-            <h3>Lista de Archivos</h3>
-            {files.length === 0 ? (
-                <p>No hay archivos disponibles</p>
-            ) : (
-                <ul>
-                    {files.map((file, index) => (
-                        <li key={index}>
-                            {file}
-                            <button onClick={() => downloadFile(file)} style={{ marginLeft: "10px" }}>
-                                Descargar
+            <div className="files-grid">
+                {files.length === 0 ? (
+                    <div style={{ textAlign: "center", gridColumn: "1 / -1" }}>
+                        <p>No videos available</p>
+                    </div>
+                ) : (
+                    files.map((file, index) => (
+                        <div key={index} className="file-card">
+                            <div className="file-thumbnail">
+                                <FaVideo size={40} color="#4facfe" />
+                            </div>
+                            <h4>{file}</h4>
+                            <button 
+                                onClick={() => downloadFile(file)} 
+                                className="download-button"
+                            >
+                                <FaDownload style={{ marginRight: "8px" }} /> Download
                             </button>
-                        </li>
-                    ))}
-                </ul>
-            )}
+                        </div>
+                    ))
+                )}
+            </div>
 
-            <p>{message}</p>
+            {message && <div className="message">{message}</div>}
         </div>
     );
 }
