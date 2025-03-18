@@ -1,0 +1,26 @@
+.app-container {
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #1a1a2e; /* Fallback color */
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: #ffffff;
+}
+
+.app-title {
+    margin: 0;
+    padding: 2rem 0;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #00f2fe, #4facfe);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
+}

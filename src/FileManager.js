@@ -18,7 +18,7 @@ function FileManager() {
         console.log('Obteniendo lista de archivos...');
         setMessage("Obteniendo lista de archivos...");
         try {
-            const response = await fetch("https://k4sszix063.execute-api.eu-west-1.amazonaws.com/prod/geturl?action=list", {
+            const response = await fetch("https://ehwk4xjor6.execute-api.eu-west-1.amazonaws.com/prod/geturl?action=list", {
                 headers: { 
                     'Authorization': authToken,
                     'Accept': 'application/json'
@@ -41,7 +41,7 @@ function FileManager() {
             
             console.log('Lista de archivos:', bodyData.files);
             setFiles(bodyData.files || []);
-            setMessage("Lista de archivos actualizada");
+            setMessage(`Lista de archivos actualizada (${new Date(bodyData.lastUpdated).toLocaleString()})`);
         } catch (error) {
             console.error('Error al obtener la lista de archivos:', {
                 name: error.name,
@@ -68,7 +68,7 @@ function FileManager() {
             // Primer fetch - obtener URL firmada
             console.log('Solicitando URL de subida para:', file.name);
             const response = await fetch(
-                `https://k4sszix063.execute-api.eu-west-1.amazonaws.com/prod/geturl?action=get_upload_url&key=${encodeURIComponent(file.name)}`,
+                `https://ehwk4xjor6.execute-api.eu-west-1.amazonaws.com/prod/geturl?action=get_upload_url&key=${encodeURIComponent(file.name)}`,
                 { 
                     headers: { 
                         'Authorization': authToken,
@@ -147,7 +147,8 @@ function FileManager() {
             });
 
             setMessage("¡Archivo subido con éxito!");
-            fetchFiles();
+            setFile(null); // Limpiar el input
+            fetchFiles();  // Actualizar la lista
 
         } catch (error) {
             console.error('Error detallado:', {
@@ -165,7 +166,7 @@ function FileManager() {
 
         try {
             const response = await fetch(
-                `https://k4sszix063.execute-api.eu-west-1.amazonaws.com/prod/geturl?action=get_download_url&key=${encodeURIComponent(fileName)}`,
+                `https://ehwk4xjor6.execute-api.eu-west-1.amazonaws.com/prod/geturl?action=get_download_url&key=${encodeURIComponent(fileName)}`,
                 { 
                     headers: { 
                         'Authorization': authToken,
@@ -234,6 +235,7 @@ function FileManager() {
                         onChange={(e) => setFile(e.target.files[0])}
                         className="file-input"
                         id="file-input"
+                        value=""  // Añadir esto para resetear el input
                     />
                     <label htmlFor="file-input" className="file-input-label">
                         <FaCloudUploadAlt size={40} color="#4facfe" />
@@ -262,9 +264,22 @@ function FileManager() {
                             <div className="file-thumbnail">
                                 <FaVideo size={40} color="#4facfe" />
                             </div>
-                            <h4>{file}</h4>
+                            <div className="file-info">
+                                <h4>{file.fileName}</h4>
+                                <div className="file-details">
+                                    <span>
+                                        <strong>Size:</strong> {(file.size / (1024 * 1024)).toFixed(2)} MB
+                                    </span>
+                                    <span>
+                                        <strong>Type:</strong> {file.contentType}
+                                    </span>
+                                    <span>
+                                        <strong>Uploaded:</strong> {new Date(file.uploadDate).toLocaleString()}
+                                    </span>
+                                </div>
+                            </div>
                             <button 
-                                onClick={() => downloadFile(file)} 
+                                onClick={() => downloadFile(file.fileName)} 
                                 className="download-button"
                             >
                                 <FaDownload style={{ marginRight: "8px" }} /> Download
